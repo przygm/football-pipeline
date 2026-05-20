@@ -27,6 +27,7 @@ models:
     diagnostics:
       +materialized: view
       +schema: SILVER    
+      +tags: ['diagnostic']
 
 seeds:
   football_analytics:

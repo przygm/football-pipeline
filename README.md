@@ -67,28 +67,28 @@ TheRundown Odds API    ──┘         │
 ## Project structure
 ```
 ├── scripts/
-│   ├── extract_football.py   # Football matches + teams ingestion
-│   ├── extract_odds.py       # Betting odds ingestion
-│   └── run_pipeline.py       # Pipeline orchestrator (main entry point)
+│   ├── extract_football.py        # Football matches + teams ingestion
+│   ├── extract_odds.py            # Betting odds ingestion
+│   └── run_pipeline.py            # Pipeline orchestrator (main entry point)
 ├── utils/
-│   ├── api.py                # HTTP client: retry, pagination, logging
-│   ├── config_loader.py      # YAML config loader
-│   ├── snowflake_conn.py     # Snowflake connector
-│   ├── snowflake_loader.py   # PUT + COPY INTO logic with retry
-│   └── storage.py            # NDJSON file serialization
+│   ├── api.py                     # HTTP client: retry, pagination, logging
+│   ├── config_loader.py           # YAML config loader
+│   ├── snowflake_conn.py          # Snowflake connector
+│   ├── snowflake_loader.py        # PUT + COPY INTO logic with retry
+│   └── storage.py                 # NDJSON file serialization
 ├── dbt_project/
 │   ├── models/
-│   │   ├── staging/          # stg_matches, stg_teams, stg_odds
-│   │   ├── intermediate/     # int_matches_normalized, int_matches_with_odds
-│   │   ├── marts/            # fct_matches, fct_daily_competition
-│   │   └── diagnostics/      # diag_missing_team_mappings
-│   ├── seeds/                # map_teams.csv (team name mapping)
-│   ├── macros/               # utc_to_pl, generate_schema_name
-│   └── tests/                # test_duplicate_matches
+│   │   ├── staging/               # stg_matches, stg_teams, stg_odds
+│   │   ├── intermediate/          # int_matches_normalized, int_matches_with_odds
+│   │   ├── marts/                 # fct_matches, fct_daily_competition
+│   │   └── diagnostics/           # diag_missing_team_mappings
+│   ├── seeds/                     # map_teams.csv (team name mapping)
+│   ├── macros/                    # utc_to_pl, generate_schema_name
+│   └── tests/                     # test_duplicate_matches
 ├── config/
-│   └── config.yaml           # Competitions, sports, date windows, rate limits
-├── scripts/snowflake_setup.sql
-├── main.py                   # Flask app for GCP Cloud Run
+│   └── config.yaml                # Competitions, sports, date windows, rate limits
+├── scripts/snowflake_setup.sql    # init sql script 
+├── main.py                        # Flask app for GCP Cloud Run
 ├── Dockerfile
 └── requirements.txt
 ```
@@ -130,13 +130,19 @@ dbt test
 Pipeline behavior is controlled via `config/config.yaml`:
 ```yaml
 competitions: ["PL", "CL", "BL1", "SA", "PD"]   # football competitions
+
 sports:                                             # odds API sport IDs
   PL: 11
   CL: 16
-  ...
+  CL: 16
+  BL1: 13
+  PD: 14  
+  SA: 15
+
 dates:
   lookback_days: 1    # days of historical data to fetch
   forward_days: 0     # days of future data to fetch
+
 api:
   rate_limit_delay: 1.5  # seconds between odds API requests
 ```
@@ -146,10 +152,6 @@ api:
 Run the setup script once before first use:
 ```sql
 -- scripts/snowflake_setup.sql
-CREATE DATABASE IF NOT EXISTS FOOTBALL_DB;
-CREATE SCHEMA IF NOT EXISTS FOOTBALL_DB.BRONZE;
--- tables: MATCHES_RAW, TEAMS_RAW, ODDS_RAW, WEATHER_RAW
--- file format: JSON_FORMAT
 ```
 
 ## GCP Cloud Run deployment
