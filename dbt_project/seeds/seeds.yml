@@ -1,0 +1,11 @@
+version: 2
+seeds:
+  - name: map_teams
+    columns:
+      - name: football_api_name
+        tests:
+          - unique
+          - not_null
+      - name: odds_api_name
+        tests:
+          - not_null

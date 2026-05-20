@@ -1,0 +1,15 @@
+competitions: ["PL", "CL", "BL1", "SA", "PD"]
+
+sports:
+  PL: 11
+  CL: 16
+  BL1: 13
+  PD: 14  
+  SA: 15
+
+dates:
+  lookback_days: 1
+  forward_days: 0
+
+api:
+  rate_limit_delay: 1.5

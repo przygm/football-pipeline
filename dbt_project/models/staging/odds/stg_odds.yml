@@ -1,0 +1,13 @@
+version: 2
+
+models:
+  - name: stg_odds
+    columns:
+    
+      - name: home_team_name
+        tests:
+          - not_null
+          
+      - name: away_team_name
+        tests:
+          - not_null

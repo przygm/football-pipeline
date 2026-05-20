@@ -1,0 +1,10 @@
+version: 2
+
+models:
+  - name: fct_matches
+    columns:
+    
+      - name: match_id
+        tests:
+          - unique
+          - not_null

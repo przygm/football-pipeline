@@ -1,0 +1,40 @@
+# secrets 
+.env
+.envpz
+venv/
+env/
+
+# notes
+notes/
+concatFiles.py
+input.txt
+output.txt
+inpdbt.txt
+outdbt.txt
+load_env.ps1
+
+# Python 
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+dashboard/
+
+# data
+raw/
+*.json
+
+# logs
+logs/
+
+#dbt
+dbt_project/logs/
+dbt_project/target/
+dbt_project/dbt_packages/
+
+# editors and system
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,34 @@
+name: 'football_analytics'
+version: '1.0.0'
+config-version: 2
+
+profile: 'football_analytics'
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+
+models:
+  football_analytics:
+  
+    staging:
+      +materialized: view
+      +schema: SILVER
+      
+    intermediate:
+      +materialized: table
+      +schema: SILVER
+      
+    marts:
+      +materialized: table
+      +schema: GOLD
+
+    diagnostics:
+      +materialized: view
+      +schema: SILVER    
+
+seeds:
+  football_analytics:
+    +schema: SILVER
+

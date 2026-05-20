@@ -1,0 +1,10 @@
+version: 2
+
+models:
+  - name: int_matches_with_odds
+    columns:
+    
+      - name: match_id
+        tests:
+          - unique
+          - not_null

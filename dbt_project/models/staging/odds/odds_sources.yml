@@ -1,0 +1,7 @@
+version: 2
+sources:
+  - name: bronze
+    database: FOOTBALL_DB
+    schema: BRONZE
+    tables:
+      - name: odds_raw
