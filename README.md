@@ -22,48 +22,29 @@ It follows production-like patterns such as batch processing with unique batch I
 
 ```
 football-data.org API  ──┐
-                         ├──▶ Python ingestion
-TheRundown Odds API    ──┘         │
-                                   │ PUT + COPY INTO
-                                   ▼
-                         ┌─────────────────────┐
-                         │   SNOWFLAKE BRONZE   │
-                         │   MATCHES_RAW        │
-                         │   TEAMS_RAW          │
-                         │   ODDS_RAW           │
-                         └──────────┬──────────┘
-                                    │ dbt run
-                                    ▼
-                         ┌─────────────────────┐
-                         │   SILVER (dbt views  │
-                         │   and tables)        │
-                         │                      │
-                         │   stg_matches        │
-                         │   stg_teams          │
-                         │   stg_odds_events    │
-                         │   stg_odds_market_   │
-                         │     lines            │
-                         │                      │
-                         │   int_matches_       │
-                         │     normalized       │
-                         │   int_matches_       │
-                         │     with_odds        │
-                         └──────────┬──────────┘
-                                    │
-                                    ▼
-                         ┌─────────────────────┐
-                         │   GOLD (dbt tables)  │
-                         │                      │
-                         │   fct_matches        │
-                         │   fct_match_vs_odds  │
-                         │   fct_team_match_    │
-                         │     stats            │
-                         │   fct_team_form      │
-                         │   fct_daily_         │
-                         │     competition      │
-                         │   dim_team           │
-                         │   dim_competition    │
-                         └─────────────────────┘
+                         ├──▶ Python ingestion ──▶ BRONZE (Snowflake)
+TheRundown Odds API    ──┘                         MATCHES_RAW
+                                                   TEAMS_RAW
+                                                   ODDS_RAW
+                                                        │
+                                                    dbt run
+                                                        │
+                                                   SILVER layer
+                                                   stg_matches
+                                                   stg_teams
+                                                   stg_odds_events
+                                                   stg_odds_market_lines
+                                                   int_matches_normalized
+                                                   int_matches_with_odds
+                                                        │
+                                                    GOLD layer
+                                                   fct_matches
+                                                   fct_match_vs_odds
+                                                   fct_team_match_stats
+                                                   fct_team_form
+                                                   fct_daily_competition
+                                                   dim_team
+                                                   dim_competition
 ```
 
 ### Layers
