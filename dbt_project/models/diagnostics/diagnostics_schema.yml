@@ -1,0 +1,17 @@
+version: 2
+
+models:
+  - name: diag_missing_team_mappings
+    description: >
+      Identifies team names from the odds API not yet covered by map_teams seed.
+      Proposes closest match using JAROWINKLER_SIMILARITY.
+      Run manually when new teams appear in the odds data:
+      dbt run --select tag:diagnostic
+
+  - name: diag_missing_participant_mappings
+    description: >
+      Identifies raw participant names from market lines that do not match
+      any team name in stg_odds_events and are not yet covered by map_participants seed.
+      Proposes closest match using JAROWINKLER_SIMILARITY.
+      Run manually when null odds appear in fct_match_vs_odds:
+      dbt run --select tag:diagnostic
