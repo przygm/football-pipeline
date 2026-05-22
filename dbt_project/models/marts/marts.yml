@@ -3,8 +3,50 @@ version: 2
 models:
   - name: fct_matches
     columns:
-    
       - name: match_id
         tests:
           - unique
           - not_null
+
+  - name: fct_match_vs_odds
+    columns:
+      - name: match_id
+        tests:
+          - unique
+          - not_null
+
+  - name: fct_team_match_stats
+    columns:
+      - name: team_match_pk
+        tests:
+          - unique
+          - not_null
+          
+  - name: dim_team
+    columns:
+      - name: team_id
+        tests:
+          - unique
+          - not_null          
+
+  - name: fct_team_form
+    description: "Rolling 5-match form for each team per competition"
+    columns:
+      - name: team
+        tests:
+          - not_null
+      - name: competition
+        tests:
+          - not_null
+      - name: match_at_utc
+        tests:
+          - not_null
+      - name: match_result
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['WIN', 'DRAW', 'LOSS']              
+      - name: points
+        tests:
+          - not_null          

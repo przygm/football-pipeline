@@ -9,7 +9,6 @@ WITH source_data AS (
         competition,
         batch_id,
         loaded_at
-
     FROM {{ source('bronze', 'teams_raw') }}
 ),
 
@@ -32,6 +31,5 @@ SELECT
     competition,
     batch_id,
     loaded_at
-	
 FROM deduplicated
 WHERE rn = 1

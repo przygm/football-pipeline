@@ -1,7 +1,7 @@
 WITH current_odds_names AS (
-    SELECT DISTINCT home_team_name AS odds_api_name FROM {{ ref('stg_odds') }}
+    SELECT DISTINCT home_team_name AS odds_api_name FROM {{ ref('stg_odds_events') }}
     UNION
-    SELECT DISTINCT away_team_name AS odds_api_name FROM {{ ref('stg_odds') }}
+    SELECT DISTINCT away_team_name AS odds_api_name FROM {{ ref('stg_odds_events') }}
 ),
 
 missing_from_seed AS (

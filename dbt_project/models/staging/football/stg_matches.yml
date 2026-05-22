@@ -6,16 +6,13 @@ models:
       - name: match_id
         tests:
           - unique
-          - not_null
-          
+          - not_null       
       - name: match_at_utc
         tests:
-          - not_null
-          
+          - not_null          
       - name: home_team_name
         tests:
-          - not_null
-          
+          - not_null          
       - name: away_team_name
         tests:
           - not_null

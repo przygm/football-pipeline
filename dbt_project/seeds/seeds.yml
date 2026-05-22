@@ -1,11 +1,37 @@
 version: 2
+
 seeds:
   - name: map_teams
+    config:
+      schema: UTIL
     columns:
       - name: football_api_name
         tests:
           - unique
           - not_null
       - name: odds_api_name
+        tests:
+          - not_null
+
+
+  - name: dim_date
+    config:
+      schema: GOLD
+    columns:
+      - name: calendar_date
+        tests:
+          - unique
+          - not_null          
+
+
+  - name: map_participants
+    config:
+      schema: UTIL
+    columns:
+      - name: participant_name_raw
+        tests:
+          - unique
+          - not_null
+      - name: participant_name_clean
         tests:
           - not_null

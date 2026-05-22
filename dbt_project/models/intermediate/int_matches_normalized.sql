@@ -1,9 +1,11 @@
 WITH matches AS (
     SELECT * FROM {{ ref('stg_matches') }}
 ),
+
 mapping AS (
     SELECT * FROM {{ ref('int_team_mapping') }}
 )
+
 SELECT
     m.*,
     COALESCE(mt1.odds_api_name, m.home_team_name) AS home_team_norm,

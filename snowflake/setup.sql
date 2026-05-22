@@ -5,6 +5,7 @@ CREATE DATABASE IF NOT EXISTS FOOTBALL_DB;
 
 -- Create schemas (layers)
 CREATE SCHEMA IF NOT EXISTS FOOTBALL_DB.BRONZE;
+CREATE SCHEMA IF NOT EXISTS FOOTBALL_DB.UTIL;
 
 -- ============================================
 -- BRONZE LAYER - Raw data tables
@@ -52,3 +53,14 @@ TYPE = JSON;
 -- These will be created automatically when dbt runs
 
 
+
+CREATE RESOURCE MONITOR football_monitor
+WITH CREDIT_QUOTA = 20
+     FREQUENCY = MONTHLY
+     START_TIMESTAMP = IMMEDIATELY
+TRIGGERS ON 50 PERCENT DO NOTIFY
+         ON 80 PERCENT DO NOTIFY
+         ON 100 PERCENT DO SUSPEND;
+
+ALTER WAREHOUSE COMPUTE_WH 
+SET RESOURCE_MONITOR = football_monitor;

@@ -3,8 +3,7 @@ version: 2
 sources:
   - name: bronze
     database: FOOTBALL_DB
-    schema: BRONZE
-    
+    schema: BRONZE 
     tables:
       - name: matches_raw
       - name: teams_raw

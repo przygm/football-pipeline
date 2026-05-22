@@ -1,13 +1,34 @@
 version: 2
 
 models:
-  - name: stg_odds
-    columns:
-    
+  - name: stg_odds_events
+    description: "One row per match event — teams, score, status, venue"
+    columns: 
+      - name: odds_event_id
+        tests:
+          - unique
+          - not_null
       - name: home_team_name
         tests:
           - not_null
-          
       - name: away_team_name
+        tests:
+          - not_null
+      - name: event_at_utc
+        tests:
+          - not_null
+
+
+  - name: stg_odds_market_lines
+    description: "One row per price point — market, participant, line, sportsbook, price"
+    columns:
+      - name: price_id
+        tests:
+          - unique
+          - not_null
+      - name: odds_event_id
+        tests:
+          - not_null
+      - name: market_id
         tests:
           - not_null
