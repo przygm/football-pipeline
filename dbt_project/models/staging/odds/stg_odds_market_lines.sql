@@ -65,6 +65,7 @@ SELECT
     market_description,
     participant_id,
     participant_name_raw,
+    participant_name,
     participant_type,
     line_id,
     line_value,
