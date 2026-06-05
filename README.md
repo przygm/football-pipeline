@@ -59,7 +59,7 @@ football-data.org API                        TheRundown API
                              |
                              v
                          dbt Gold
-
+'''
 ---
 
 ## Data Sources
