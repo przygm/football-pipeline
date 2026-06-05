@@ -42,7 +42,7 @@ Current functionality includes:
 ---
 
 ## Architecture
-
+```text
 football-data.org API                        TheRundown API
         |                                         | 
         v                                         v
