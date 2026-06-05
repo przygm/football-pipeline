@@ -150,7 +150,7 @@ Install dependencies:
 pip install -r requirements.txt
 
 Create .env file:
-
+```
 SNOWFLAKE_USER=
 SNOWFLAKE_PASSWORD=
 SNOWFLAKE_ACCOUNT=
@@ -160,7 +160,7 @@ SNOWFLAKE_SCHEMA=
 
 FOOTBALL_API_KEY=
 ODDS_API_KEY=
-
+```
 ---
 
 ## Run Pipeline
@@ -184,7 +184,7 @@ dbt test
 Pipeline behaviour is controlled by:
 
 config/config.yaml
-
+```
 Current configuration:
 
 competitions:
@@ -207,7 +207,7 @@ dates:
 
 api:
   rate_limit_delay: 1.5
-
+```
 ---
 
 ## Snowflake Setup
