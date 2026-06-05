@@ -1,20 +1,19 @@
 {{ config(
     materialized='incremental',
-    unique_key='match_id'
+    unique_key='match_id',
+    incremental_strategy='merge'
 ) }}
 
 with source_data as (
-
     SELECT *
     FROM {{ ref('int_matches_with_odds') }}
 
     {% if is_incremental() %}
-        WHERE loaded_at >= (SELECT MAX(loaded_at) FROM {{ this }})
+       where match_at_utc >= (select DATEADD(day, -1, max(match_at_utc)) from {{ this }})
     {% endif %}
 ),
 
 localized AS (
-
     SELECT
         *,
         {{ utc_to_pl('match_at_utc') }} AS match_at_pl
@@ -23,7 +22,7 @@ localized AS (
 
 SELECT
     match_id,
-    competition,
+    competition_code,
     match_at_utc,
     match_at_pl,
     CAST(match_at_pl AS DATE) AS match_date_pl,
@@ -33,7 +32,7 @@ SELECT
     home_score,
     away_score,
     match_status,
-    FOOTBALL_DB.UTIL.GET_MATCH_RESULT(home_score, away_score) AS result,
+    {{ target.schema }}_UTIL.GET_MATCH_RESULT(home_score, away_score) AS result,
+    odds_event_id,
     loaded_at
 FROM localized
-ORDER BY competition, match_date_pl DESC, match_time_pl DESC

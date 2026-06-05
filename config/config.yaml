@@ -8,8 +8,8 @@ sports:
   SA: 15
 
 dates:
-  lookback_days: 1
-  forward_days: 0
+  lookback_days: 1      #237    293
+  forward_days: 0        #-201   -231
 
 api:
   rate_limit_delay: 1.5

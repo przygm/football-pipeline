@@ -1,76 +1,96 @@
-football_api_name,odds_api_name
-Manchester City FC,Manchester City
-FC Barcelona,Barcelona
-Borussia Mönchengladbach,Borussia Monchengladbach
-Hamburger SV,Hamburg SV
-Bayer 04 Leverkusen,Bayer Leverkusen
-Manchester United FC,Manchester United
-Rayo Vallecano de Madrid,Rayo Vallecano
-RB Leipzig,RB Leipzig
-AC Pisa 1909,Pisa
-Parma Calcio 1913,Parma
-CA Osasuna,Osasuna
-Nottingham Forest FC,Nottingham Forest
-Newcastle United FC,Newcastle United
-SSC Napoli,Napoli
-Real Madrid CF,Real Madrid
-RCD Mallorca,Mallorca
-1. FSV Mainz 05,Mainz
-Liverpool FC,Liverpool
-Levante UD,Levante
-Leeds United FC,Leeds United
-US Lecce,Lecce
-SS Lazio,Lazio
-Tottenham Hotspur FC,Tottenham Hotspur
-Wolverhampton Wanderers FC,Wolverhampton
-West Ham United FC,West Ham United
-SV Werder Bremen,Werder Bremen
-Villarreal CF,Villarreal
-VfL Wolfsburg,VfL Wolfsburg
-VfB Stuttgart,VfB Stuttgart
-Valencia CF,Valencia
-Udinese Calcio,Udinese
-Real Betis Balompié,Real Betis
-Sunderland AFC,Sunderland
-FC St. Pauli 1910,St. Pauli
-Sevilla FC,Sevilla
-SC Freiburg,SC Freiburg
-Real Sociedad de Fútbol,Real Sociedad
-Real Oviedo,Real Oviedo
-AC Milan,AC Milan
-Chelsea FC,Chelsea
-1. FC Heidenheim 1846,1. FC Heidenheim
-AS Roma,AS Roma
-Deportivo Alavés,Alavés
-Aston Villa FC,Aston Villa
-Atalanta BC,Atalanta
-Athletic Club,Athletic Club
-Bologna FC 1909,Bologna
-AFC Bournemouth,Bournemouth
-Brentford FC,Brentford FC
-Brighton & Hove Albion FC,Brighton & Hove Albion
-Burnley FC,Burnley
-Cagliari Calcio,Cagliari
-Juventus FC,Juventus
-Como 1907,Como
-Crystal Palace FC,Crystal Palace
-Hellas Verona FC,Hellas Verona
-Elche CF,Elche
-RCD Espanyol de Barcelona,Espanyol
-Everton FC,Everton
-FC Augsburg,FC Augsburg
-Girona FC,Girona
-1. FC Union Berlin,FC Union Berlin
-US Cremonese,Cremonese
-Getafe CF,Getafe
-Genoa CFC,Genoa
-ACF Fiorentina,Fiorentina
-Fulham FC,Fulham
-TSG 1899 Hoffenheim,TSG Hoffenheim
-RC Celta de Vigo,Celta Vigo
-FC Bayern München,Bayern Munich
-1. FC Köln,FC Cologne
-Club Atlético de Madrid,Atletico Madrid
-FC Internazionale Milano,Inter Milan
-US Sassuolo Calcio,Sassuolo
-Torino FC,Torino
+canonical_name,football_api_name,odds_api_name
+Barcelona,FC Barcelona,Barcelona
+Borussia Monchengladbach,Borussia Mönchengladbach,Borussia Monchengladbach
+Hamburg SV,Hamburger SV,Hamburg SV
+Bayer Leverkusen,Bayer 04 Leverkusen,Bayer Leverkusen
+Manchester United,Manchester United FC,Manchester United
+Rayo Vallecano,Rayo Vallecano de Madrid,Rayo Vallecano
+RB Leipzig,RB Leipzig,RB Leipzig
+Pisa,AC Pisa 1909,Pisa
+Parma,Parma Calcio 1913,Parma
+Osasuna,CA Osasuna,Osasuna
+Nottingham Forest,Nottingham Forest FC,Nottingham Forest
+Newcastle United,Newcastle United FC,Newcastle United
+Napoli,SSC Napoli,Napoli
+Real Madrid,Real Madrid CF,Real Madrid
+Mallorca,RCD Mallorca,Mallorca
+Mainz,1. FSV Mainz 05,Mainz
+Liverpool,Liverpool FC,Liverpool
+Levante,Levante UD,Levante
+Leeds United,Leeds United FC,Leeds United
+Lecce,US Lecce,Lecce
+Lazio,SS Lazio,Lazio
+Tottenham Hotspur,Tottenham Hotspur FC,Tottenham Hotspur
+Wolverhampton,Wolverhampton Wanderers FC,Wolverhampton
+West Ham United,West Ham United FC,West Ham United
+Werder Bremen,SV Werder Bremen,Werder Bremen
+Villarreal,Villarreal CF,Villarreal
+VfL Wolfsburg,VfL Wolfsburg,VfL Wolfsburg
+VfB Stuttgart,VfB Stuttgart,VfB Stuttgart
+Valencia,Valencia CF,Valencia
+Udinese,Udinese Calcio,Udinese
+Real Betis,Real Betis Balompié,Real Betis
+Sunderland,Sunderland AFC,Sunderland
+St. Pauli,FC St. Pauli 1910,St. Pauli
+Sevilla,Sevilla FC,Sevilla
+SC Freiburg,SC Freiburg,SC Freiburg
+Real Sociedad,Real Sociedad de Fútbol,Real Sociedad
+Real Oviedo,Real Oviedo,Real Oviedo
+AC Milan,AC Milan,AC Milan
+Chelsea,Chelsea FC,Chelsea
+1. FC Heidenheim,1. FC Heidenheim 1846,1. FC Heidenheim
+AS Roma,AS Roma,AS Roma
+Alavés,Deportivo Alavés,Alavés
+Aston Villa,Aston Villa FC,Aston Villa
+Atalanta,Atalanta BC,Atalanta
+Athletic Club,Athletic Club,Athletic Club
+Bologna,Bologna FC 1909,Bologna
+Bournemouth,AFC Bournemouth,Bournemouth
+Brentford FC,Brentford FC,Brentford FC
+Brighton & Hove Albion,Brighton & Hove Albion FC,Brighton & Hove Albion
+Burnley,Burnley FC,Burnley
+Cagliari,Cagliari Calcio,Cagliari
+Juventus,Juventus FC,Juventus
+Como,Como 1907,Como
+Crystal Palace,Crystal Palace FC,Crystal Palace
+Hellas Verona,Hellas Verona FC,Hellas Verona
+Elche,Elche CF,Elche
+Espanyol,RCD Espanyol de Barcelona,Espanyol
+Everton,Everton FC,Everton
+FC Augsburg,FC Augsburg,FC Augsburg
+Girona,Girona FC,Girona
+FC Union Berlin,1. FC Union Berlin,FC Union Berlin
+Cremonese,US Cremonese,Cremonese
+Getafe,Getafe CF,Getafe
+Genoa,Genoa CFC,Genoa
+Fiorentina,ACF Fiorentina,Fiorentina
+Fulham,Fulham FC,Fulham
+TSG Hoffenheim,TSG 1899 Hoffenheim,TSG Hoffenheim
+Celta Vigo,RC Celta de Vigo,Celta Vigo
+Bayern Munich,FC Bayern München,Bayern Munich
+FC Cologne,1. FC Köln,FC Cologne
+Atletico Madrid,Club Atlético de Madrid,Atletico Madrid
+Inter Milan,FC Internazionale Milano,Inter Milan
+Sassuolo,US Sassuolo Calcio,Sassuolo
+Torino,Torino FC,Torino
+Marseille,Olympique de Marseille,Marseille
+Inter Milan,FC Internazionale Milano,Internazionale
+Galatasaray,Galatasaray SK,Galatasaray
+Paris Saint-Germain,Paris Saint-Germain FC,Paris Saint-Germain
+Club Brugge,Club Brugge KV,Club Brugge
+Benfica,Sport Lisboa e Benfica,Benfica
+Arsenal,Arsenal FC,Arsenal
+AS Monaco,AS Monaco FC,AS Monaco
+Sporting CP,Sporting Clube de Portugal,Sporting CP
+Bodo/Glimt,FK Bodø/Glimt,Bodo/Glimt
+FC Copenhagen,FC København,FC Copenhagen
+Pafos,Paphos FC,Pafos
+Slavia Prague,SK Slavia Praha,Slavia Prague
+Union St.-Gilloise,Royale Union Saint-Gilloise,Union St.-Gilloise
+Kairat Almaty,FK Kairat,Kairat Almaty
+Manchester City,Manchester City FC,Manchester City
+Olympiacos,PAE Olympiakos SFP,Olympiacos
+FK Qarabag,Qarabağ Ağdam FK,FK Qarabag
+Ajax Amsterdam,AFC Ajax,Ajax Amsterdam
+Arsenal,Arsenal FC,Arsenal FC
+PSV Eindhoven,PSV,PSV Eindhoven

@@ -7,12 +7,14 @@ seeds:
     columns:
       - name: football_api_name
         tests:
-          - unique
           - not_null
       - name: odds_api_name
         tests:
+          - unique
           - not_null
-
+      - name: canonical_name
+        tests:
+          - not_null
 
   - name: dim_date
     config:
@@ -33,5 +35,17 @@ seeds:
           - unique
           - not_null
       - name: participant_name_clean
+        tests:
+          - not_null
+
+  - name: map_competitions
+    config:
+      schema: UTIL
+    columns:
+      - name: competition_code
+        tests:
+          - unique
+          - not_null
+      - name: competition_name
         tests:
           - not_null

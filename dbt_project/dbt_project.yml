@@ -28,8 +28,3 @@ models:
       +materialized: view
       +schema: SILVER    
       +tags: ['diagnostic']
-
-seeds:
-  football_analytics:
-    +schema: SILVER
-

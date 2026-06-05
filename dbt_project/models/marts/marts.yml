@@ -7,6 +7,15 @@ models:
         tests:
           - unique
           - not_null
+      - name: odds_event_id
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_odds_events')
+                field: odds_event_id
+              config:
+                severity: warn
+                where: "odds_event_id IS NOT NULL"
 
   - name: fct_match_vs_odds
     columns:
@@ -14,6 +23,12 @@ models:
         tests:
           - unique
           - not_null
+    tests:
+      - dbt_utils.expression_is_true:
+          arguments: 
+            expression: "has_complete_odds = TRUE"
+          config:
+            severity: warn      
 
   - name: fct_team_match_stats
     columns:
@@ -21,7 +36,17 @@ models:
         tests:
           - unique
           - not_null
-          
+    tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "
+              (match_result = 'WIN' AND points = 3)
+              OR
+              (match_result = 'DRAW' AND points = 1)
+              OR
+              (match_result = 'LOSS' AND points = 0)
+            "          
+
   - name: dim_team
     columns:
       - name: team_id
@@ -29,16 +54,13 @@ models:
           - unique
           - not_null          
 
-  - name: fct_team_form
-    description: "Rolling 5-match form for each team per competition"
+  - name: fct_team_rolling_form_last_5
+    description: "Per-match rolling stats and win/loss/draw streak per team"
     columns:
+      - name: match_id
+        tests:
+          - not_null
       - name: team
-        tests:
-          - not_null
-      - name: competition
-        tests:
-          - not_null
-      - name: match_at_utc
         tests:
           - not_null
       - name: match_result
@@ -46,7 +68,17 @@ models:
           - not_null
           - accepted_values:
               arguments:
-                values: ['WIN', 'DRAW', 'LOSS']              
-      - name: points
+                values: ['WIN', 'DRAW', 'LOSS']                          
+                
+  - name: fct_daily_competition
+    description: "Daily match stats per competition with date dimension attributes"
+    columns:
+      - name: calendar_date
         tests:
-          - not_null          
+          - not_null
+      - name: competition_name
+        tests:
+          - not_null
+      - name: matches_count
+        tests:
+          - not_null                

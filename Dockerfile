@@ -1,6 +1,9 @@
 # Use official lightweight Python image as the base runtime
 FROM python:3.10-slim
 
+# Install git (required by dbt to fetch packages and internal dependencies)
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+
 # Set the working directory inside the container
 WORKDIR /app
 

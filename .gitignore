@@ -33,6 +33,9 @@ dbt_project/logs/
 dbt_project/target/
 dbt_project/dbt_packages/
 dbt_project/seeds/*.csvx
+dbt_project/.user.yml
+
+dbt_project_odds/
 
 # editors and system
 .vscode/

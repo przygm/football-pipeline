@@ -1,130 +1,199 @@
-# Football Analytics Pipeline (Snowflake)
+# Football Analytics Pipeline
 
 ## Overview
-End-to-end data pipeline that ingests football match data and betting odds from external APIs, stores them in Snowflake, and transforms them using dbt into analytics-ready models.
 
-The project demonstrates a full data engineering workflow: multi-source ingestion, layered storage (Bronze / Silver / Gold), transformation, data quality testing, and cloud-based orchestration.
+Data engineering project that collects football match data and betting odds from external APIs, loads raw data into Snowflake, and transforms it using dbt.
 
-It follows production-like patterns such as batch processing with unique batch IDs, idempotent ingestion, deduplication logic, and automated scheduling via GCP Cloud Run Jobs.
+The project combines data from multiple sources and stores it using a Bronze → Silver → Gold architecture.
 
-> **Note:** dbt transformations are still under active development.
+Current functionality includes:
 
-## Tech stack
-- Python (multi-source API ingestion, retry logic, logging, NDJSON serialization)
-- Snowflake (data warehouse, Bronze / Silver / Gold architecture)
-- dbt (transformations, tests, seeds, macros)
-- GCP Cloud Run Jobs (pipeline orchestration via Flask + Gunicorn)
-- Docker (containerization)
+- football match ingestion
+- betting odds ingestion
+- Snowflake data warehouse
+- dbt transformations
+- data quality tests
+- deployment to GCP Cloud Run
+
+---
+
+## Tech Stack
+
+### Ingestion
+
+- Python
+- Requests
+- Snowflake Connector
+
+### Data Warehouse
+
+- Snowflake
+
+### Transformations
+
+- dbt Core
+- dbt-utils
+
+### Cloud
+
+- GCP Cloud Run
+- Docker
+
+---
 
 ## Architecture
 
-### Data flow
+football-data.org API                        TheRundown API
+        |                                         | 
+        v                                         v
+    Python ETL                                Python ETL
+        |                                         |
+        |                                         |
+        +--------------------+--------------------+
+                             |
+                             v
+                      Snowflake Bronze
+                             |
+                             v
+                        dbt Silver
+                             |
+                             v
+                         dbt Gold
 
-```
-football-data.org API  ──┐
-                         ├──▶ Python ingestion ──▶ BRONZE (Snowflake)
-TheRundown Odds API    ──┘                         MATCHES_RAW
-                                                   TEAMS_RAW
-                                                   ODDS_RAW
-                                                        │
-                                                    dbt run
-                                                        │
-                                                   SILVER layer
-                                                   stg_matches
-                                                   stg_teams
-                                                   stg_odds_events
-                                                   stg_odds_market_lines
-                                                   int_matches_normalized
-                                                   int_matches_with_odds
-                                                        │
-                                                    GOLD layer
-                                                   fct_matches
-                                                   fct_match_vs_odds
-                                                   fct_team_match_stats
-                                                   fct_team_form
-                                                   fct_daily_competition
-                                                   dim_team
-                                                   dim_competition
-```
+---
 
-### Layers
-- **BRONZE** – Raw VARIANT data loaded directly from APIs, with `batch_id` and `loaded_at`
-- **SILVER** – Staging and intermediate models: cleaned, typed, deduplicated (dbt views and tables)
-- **GOLD** – Final fact and dimension tables ready for analytics (dbt tables)
+## Data Sources
 
-## Project structure
+### football-data.org
 
-```
-├── scripts/
-│   ├── extract_football.py        # Football matches + teams ingestion
-│   ├── extract_odds.py            # Betting odds ingestion
-│   └── run_pipeline.py            # Pipeline orchestrator (main entry point)
-├── utils/
-│   ├── api.py                     # HTTP client: retry, pagination, logging
-│   ├── config_loader.py           # YAML config loader
-│   ├── snowflake_conn.py          # Snowflake connector
-│   ├── snowflake_loader.py        # PUT + COPY INTO logic with retry
-│   └── storage.py                 # NDJSON file serialization
-├── dbt_project/
-│   ├── models/
-│   │   ├── staging/               # stg_matches, stg_teams, stg_odds_events, stg_odds_market_lines
-│   │   ├── intermediate/          # int_matches_normalized, int_matches_with_odds
-│   │   ├── marts/                 # fct_matches, fct_match_vs_odds, fct_team_match_stats,
-│   │   │                          # fct_team_form, fct_daily_competition, dim_team, dim_competition
-│   │   └── diagnostics/           # diag_missing_team_mappings, diag_missing_participant_mappings
-│   ├── seeds/                     # map_teams.csv, map_participants.csv, dim_date.csv
-│   ├── macros/                    # utc_to_pl, generate_schema_name
-│   └── tests/                     # test_duplicate_matches
-├── config/
-│   └── config.yaml                # Competitions, sports, date windows, rate limits
-├── snowflake/
-│   ├── setup.sql                  # Database, schema and table definitions, resource monitor
-│   └── functions.sql              # UDFs: GET_MATCH_RESULT, GET_POINTS
-├── main.py                        # Flask app for GCP Cloud Run
-├── Dockerfile
-└── requirements.txt
-```
+Used to collect:
 
-## Local setup
+- matches
+- teams
+
+### TheRundown API
+
+Used to collect:
+
+- football events
+- betting odds
+
+---
+
+## Data Model
+
+### Bronze
+
+Raw JSON data loaded directly from APIs.
+
+Tables:
+
+- MATCHES_RAW
+- TEAMS_RAW
+- ODDS_RAW
+
+Each record contains:
+
+- batch_id
+- loaded_at
+
+which allows identification of:
+
+- when data was loaded
+- which pipeline execution produced the record
+
+---
+
+### Silver
+
+Technical transformation layer.
+
+Responsibilities:
+
+- parsing JSON fields
+- converting data into structured columns
+- deduplication
+- team name normalization
+- matching records between data sources
+
+Examples:
+
+- stg_matches
+- stg_teams
+- stg_odds_events
+- stg_odds_market_lines
+- int_matches_normalized
+- int_matches_with_odds
+
+---
+
+### Gold
+
+Business-ready analytical models.
+
+Examples:
+
+- fct_matches
+- fct_match_vs_odds
+- fct_team_match_stats
+- fct_team_rolling_form_last_5
+- fct_daily_competition
+- dim_team
+
+---
+
+## Local Setup
 
 Install dependencies:
-```bash
+
 pip install -r requirements.txt
-```
 
-Create `.env` file in the root directory:
-```env
-SNOWFLAKE_USER=your_user
-SNOWFLAKE_PASSWORD=your_password
-SNOWFLAKE_ACCOUNT=your_account
-SNOWFLAKE_WAREHOUSE=your_warehouse
-SNOWFLAKE_DATABASE=FOOTBALL_DB
-SNOWFLAKE_SCHEMA=BRONZE
+Create .env file:
 
-FOOTBALL_API_KEY=your_football_api_key
-ODDS_API_KEY=your_odds_api_key
-```
+SNOWFLAKE_USER=
+SNOWFLAKE_PASSWORD=
+SNOWFLAKE_ACCOUNT=
+SNOWFLAKE_WAREHOUSE=
+SNOWFLAKE_DATABASE=
+SNOWFLAKE_SCHEMA=
 
-Run pipeline locally:
-```bash
+FOOTBALL_API_KEY=
+ODDS_API_KEY=
+
+---
+
+## Run Pipeline
+
 python -m scripts.run_pipeline
-```
 
-Run dbt:
-```bash
+---
+
+## Run dbt
+
 cd dbt_project
+
 dbt seed
-dbt run --exclude tag:diagnostic
+dbt run
 dbt test
-```
+
+---
 
 ## Configuration
 
-Pipeline behavior is controlled via `config/config.yaml`:
-```yaml
-competitions: ["PL", "CL", "BL1", "SA", "PD"]   # football competitions
+Pipeline behaviour is controlled by:
 
-sports:                                             # odds API sport IDs
+config/config.yaml
+
+Current configuration:
+
+competitions:
+  - PL
+  - CL
+  - BL1
+  - SA
+  - PD
+
+sports:
   PL: 11
   CL: 16
   BL1: 13
@@ -132,68 +201,57 @@ sports:                                             # odds API sport IDs
   SA: 15
 
 dates:
-  lookback_days: 1    # days of historical data to fetch
-  forward_days: 0     # days of future data to fetch
+  lookback_days: 1
+  forward_days: 0
 
 api:
-  rate_limit_delay: 1.5  # seconds between odds API requests
-```
+  rate_limit_delay: 1.5
 
-## Snowflake setup
+---
 
-Run the setup scripts once before first use:
-```sql
--- snowflake/setup.sql   — creates database, schemas, tables, resource monitor
--- snowflake/functions.sql — creates UDFs
-```
+## Snowflake Setup
 
-## GCP Cloud Run deployment
+Create database objects:
+snowflake/setup.sql
 
-The pipeline runs as a Flask application containerized with Docker and deployed to GCP Cloud Run Jobs.
+Create utility functions:
+snowflake/functions.sql
 
-Build and push Docker image:
-```bash
-docker build -t gcr.io/<your-project>/football-pipeline .
-docker push gcr.io/<your-project>/football-pipeline
-```
+---
 
-The Flask app exposes a single endpoint:
-- `GET /` — triggers the full pipeline and returns status
+## Deployment
 
-Environment variables (API keys, Snowflake credentials) are injected via GCP Secret Manager or Cloud Run environment variable configuration.
+The ingestion layer is deployed to GCP Cloud Run.
 
-## Data quality
+The container executes:
 
-### dbt built-in tests
-- `match_id` — unique, not_null (stg_matches, int_matches_with_odds, fct_matches, fct_match_vs_odds)
-- `team_match_pk` — unique, not_null (fct_team_match_stats)
-- `price_id` — unique, not_null (stg_odds_market_lines)
-- `match_at_utc`, `home_team_name`, `away_team_name` — not_null
-- `match_result` — accepted_values: WIN, DRAW, LOSS (fct_team_form)
+1. Python ingestion
+2. Snowflake loading
+3. dbt run
+4. dbt test
 
-### Custom SQL tests
-- `test_duplicate_matches` — verifies no duplicate `match_id` in `fct_matches`
+Environment variables are provided through Cloud Run configuration and/or GCP Secret Manager.
 
-### Diagnostics
-Diagnostic models are not part of the regular pipeline run. They are run manually when data quality issues are suspected:
+---
 
-```bash
-dbt run --select tag:diagnostic
-```
+## Data Quality
 
-- `diag_missing_team_mappings` — identifies team names from the odds API not covered by `map_teams` seed, with fuzzy match proposals using `JAROWINKLER_SIMILARITY`. Run when new competitions or teams are added.
-- `diag_missing_participant_mappings` — identifies raw participant names from market lines that do not match any team in `stg_odds_events` and are not yet in `map_participants` seed. Run when null odds appear in `fct_match_vs_odds`.
+Implemented checks include:
 
-### Team name mapping
-Two separate APIs use different team name conventions. Mismatches are resolved via seed-based lookup tables:
-- `map_teams.csv` — maps football-data.org names to TheRundown names at the event level
-- `map_participants.csv` — maps malformed or inconsistent participant names within market lines to their correct form
+### dbt Tests
 
-## Notes
-- All timestamps ingested in UTC; timezone conversion to `Europe/Warsaw` happens in the dbt Silver/Gold layer
-- Teams are fetched only on Mondays (`is_teams_day`) to avoid unnecessary API calls
-- NDJSON format is used for Snowflake `PUT + COPY INTO` to support multi-record batch files
-- `ON_ERROR = 'ABORT_STATEMENT'` used in COPY INTO to catch data issues early
-- dbt schema naming differs between `prod` and `dev` targets via the `generate_schema_name` macro
-- `has_complete_odds` flag in `fct_match_vs_odds` marks records where all three moneyline odds (home, away, draw) are available; records with incomplete odds have `market_predicted_result` and `market_correct` set to NULL
-- dbt transformations are still under active development
+- unique
+- not_null
+- accepted_values
+- relationships
+
+### Custom SQL Tests
+
+- duplicate match detection
+- match result consistency
+- team statistics validation
+
+### Diagnostic Models
+
+- missing team mappings
+- missing participant mappings

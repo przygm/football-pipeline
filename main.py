@@ -1,6 +1,27 @@
 import os
+import subprocess
 from flask import Flask
 from scripts.run_pipeline import main  
+
+#---------------------------------------------------------------------------------------------------
+def run_command(cmd, cwd):
+    process = subprocess.Popen(
+        cmd,
+        cwd=cwd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True
+    )
+
+    for line in process.stdout:
+        print(line, end="", flush=True)
+
+    process.wait()
+
+    if process.returncode != 0:
+        raise Exception(f"Command failed: {' '.join(cmd)}")
+
+#---------------------------------------------------------------------------------------------------
 
 app = Flask(__name__)
 
@@ -8,6 +29,8 @@ app = Flask(__name__)
 def run_pipeline():
     try:
         main() 
+        run_command(["dbt", "run", "--profiles-dir", "."], "dbt_project")
+        run_command(["dbt", "test", "--profiles-dir", "."], "dbt_project")
         return "PIPELINE SUCCESS - Check logs in GCP console.", 200
     except Exception as e:
         return f"PIPELINE FAILED: {str(e)}", 500

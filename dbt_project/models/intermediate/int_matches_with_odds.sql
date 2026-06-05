@@ -2,12 +2,14 @@ WITH matches AS (
     SELECT * FROM {{ ref('int_matches_normalized') }}
 ),
 
-mapping AS (
-    SELECT * FROM {{ ref('int_team_mapping') }}
-),
-
 odds AS (
-    SELECT * FROM {{ ref('stg_odds_events') }}
+    SELECT 
+        o.*,
+        COALESCE(mh.canonical_name, o.home_team_name) AS home_team_canon,
+        COALESCE(ma.canonical_name, o.away_team_name) AS away_team_canon
+    FROM {{ ref('stg_odds_events') }} o
+    LEFT JOIN {{ ref('map_teams') }} mh ON o.home_team_name = mh.odds_api_name
+    LEFT JOIN {{ ref('map_teams') }} ma ON o.away_team_name = ma.odds_api_name
 )
 
 SELECT
@@ -20,10 +22,12 @@ SELECT
     o.season_name,
     o.event_at_utc AS odds_event_at_utc
 FROM matches m
-LEFT JOIN mapping map_h
-    ON m.home_team_norm = map_h.football_api_name
-LEFT JOIN mapping map_a
-    ON m.away_team_norm = map_a.football_api_name
 LEFT JOIN odds o
-    ON COALESCE(map_h.odds_api_name, m.home_team_norm) = o.home_team_name
-   AND COALESCE(map_a.odds_api_name, m.away_team_norm) = o.away_team_name
+    ON m.home_team_norm = o.home_team_canon   
+   AND m.away_team_norm = o.away_team_canon 
+   AND CAST(o.event_at_utc AS DATE) 
+       BETWEEN DATEADD(day,-2, CAST(m.match_at_utc AS DATE))  AND  DATEADD(day, 2, CAST(m.match_at_utc AS DATE))
+QUALIFY ROW_NUMBER() OVER (
+    PARTITION BY m.match_id 
+    ORDER BY ABS(DATEDIFF('minute', m.match_at_utc, o.event_at_utc)) ASC
+) = 1   

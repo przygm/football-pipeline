@@ -4,10 +4,6 @@ WITH base AS (
         batch_id,
         loaded_at
     FROM {{ source('bronze', 'odds_raw') }}
-
-    {% if is_incremental() %}
-        WHERE loaded_at > (SELECT MAX(loaded_at) FROM {{ this }})
-    {% endif %}
 ),
 
 markets AS (
@@ -24,7 +20,8 @@ markets AS (
         l.value:value::string AS line_value,
         pr.key::integer AS sportsbook_id,
         pr.value:id::string AS price_id,
-        pr.value:price::integer AS odds_price,
+        pr.value:price::float AS odds_price,
+        {{ american_to_decimal('pr.value:price::float') }} AS decimal_price,
         pr.value:price_delta::integer AS price_delta,
         pr.value:is_main_line::boolean AS is_main_line,
         pr.value:updated_at::timestamp_ntz AS odds_updated_at,
@@ -38,7 +35,7 @@ markets AS (
     LATERAL FLATTEN(input => l.value:prices) pr
 ),
 
--- mapowanie nazw po flatteningu
+-- map team names after flattening
 markets_with_clean_names AS (
     SELECT
         m.*,
@@ -72,6 +69,7 @@ SELECT
     sportsbook_id,
     price_id,
     odds_price,
+    decimal_price,
     price_delta,
     is_main_line,
     odds_updated_at,
