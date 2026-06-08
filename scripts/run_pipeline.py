@@ -20,7 +20,7 @@ def generate_batch_id() -> str:
 def main() -> None:
     batch_id = generate_batch_id()
 
-    logging.info(f"START PIPELINE | batch_id={batch_id}")
+    logging.info(f"START INGEST | batch_id={batch_id}")
 
     try:
         football_batches = run_football_etl(batch_id)
