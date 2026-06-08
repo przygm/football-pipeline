@@ -37,13 +37,13 @@ def main() -> None:
 
         if all_batches:
             run_etl_pipeline(all_batches, batch_id)
-            logging.info(f"PIPELINE SUCCESS | batch_id={batch_id}")
+            logging.info(f"INGEST SUCCESS | batch_id={batch_id}")
         else:
-            logging.warning(f"PIPELINE FINISHED - No data collected | batch_id={batch_id}")
+            logging.warning(f"INGEST FINISHED - No data collected | batch_id={batch_id}")
 
 
     except Exception as e:
-        logging.error(f"PIPELINE FAILED: {e} | batch_id={batch_id}")
+        logging.error(f"INGEST FAILED: {e} | batch_id={batch_id}")
         raise
 
 #---------------------------------------------------------------------------------------------------

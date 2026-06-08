@@ -1,3 +1,4 @@
+import logging
 import os
 import subprocess
 from flask import Flask
@@ -14,7 +15,7 @@ def run_command(cmd, cwd):
     )
 
     for line in process.stdout:
-        print(line, end="", flush=True)
+        logging.info(line.rstrip())
 
     process.wait()
 
@@ -29,10 +30,13 @@ app = Flask(__name__)
 def run_pipeline():
     try:
         main() 
-        run_command(["dbt", "run", "--profiles-dir", "."], "dbt_project")
-        run_command(["dbt", "test", "--profiles-dir", "."], "dbt_project")
+        run_command(["dbt", "debug", "--profiles-dir", "."], "dbt_project")
+        run_command(["dbt", "run",   "--profiles-dir", "."], "dbt_project")
+        run_command(["dbt", "test",  "--profiles-dir", "."], "dbt_project")
+        logging.info("PIPELINE SUCCESS") 
         return "PIPELINE SUCCESS - Check logs in GCP console.", 200
     except Exception as e:
+        logging.error(f"PIPELINE FAILED: {str(e)}")
         return f"PIPELINE FAILED: {str(e)}", 500
 
 if __name__ == "__main__":
