@@ -4,7 +4,7 @@
 
 Data engineering project that collects football match data and betting odds from external APIs, loads raw data into Snowflake, and transforms it using dbt.
 
-The project combines data from multiple sources and stores it using a Bronze → Silver → Gold architecture.
+The project combines data from multiple sources and stores them using a Bronze → Silver → Gold architecture.
 
 Current functionality includes:
 
@@ -14,6 +14,7 @@ Current functionality includes:
 - dbt transformations
 - data quality tests
 - deployment to GCP Cloud Run
+- analytical dashboard built separately in Streamlit
 
 ---
 
@@ -44,10 +45,9 @@ Current functionality includes:
 ## Architecture
 ```text
 football-data.org API                        TheRundown API
-        |                                         | 
+        |                                         |
         v                                         v
     Python ETL                                Python ETL
-        |                                         |
         |                                         |
         +--------------------+--------------------+
                              |
@@ -55,12 +55,15 @@ football-data.org API                        TheRundown API
                       Snowflake Bronze
                              |
                              v
-                        dbt Silver
+                      dbt Silver Models
                              |
                              v
-                         dbt Gold
-
+                       dbt Gold Models
+                             |
+                             v
+                   Streamlit Analytics Dashboard
 ```
+
 ---
 
 ## Data Sources
@@ -92,6 +95,8 @@ Tables:
 - MATCHES_RAW
 - TEAMS_RAW
 - ODDS_RAW
+
+The Bronze layer is shared by all environments and acts as the single source of raw data.
 
 Each record contains:
 
@@ -126,6 +131,10 @@ Examples:
 - int_matches_normalized
 - int_matches_with_odds
 
+Production schema:
+
+- PROD_SILVER
+
 ---
 
 ### Gold
@@ -141,16 +150,22 @@ Examples:
 - fct_daily_competition
 - dim_team
 
+Production schema:
+
+- PROD_GOLD
+
 ---
 
 ## Local Setup
 
 Install dependencies:
 
+```bash
 pip install -r requirements.txt
+```
 
 Create .env file:
-```
+```text
 SNOWFLAKE_USER=
 SNOWFLAKE_PASSWORD=
 SNOWFLAKE_ACCOUNT=
@@ -165,17 +180,21 @@ ODDS_API_KEY=
 
 ## Run Pipeline
 
+```bash
 python -m scripts.run_pipeline
+```
 
 ---
 
 ## Run dbt
 
+```bash
 cd dbt_project
 
-dbt seed
-dbt run
-dbt test
+dbt seed --target prod
+dbt run --target prod
+dbt test --target prod
+```
 
 ---
 
@@ -183,10 +202,13 @@ dbt test
 
 Pipeline behaviour is controlled by:
 
+```text
 config/config.yaml
 ```
+
 Current configuration:
 
+```yaml
 competitions:
   - PL
   - CL
@@ -208,15 +230,22 @@ dates:
 api:
   rate_limit_delay: 1.5
 ```
+
 ---
 
 ## Snowflake Setup
 
 Create database objects:
+
+```text
 snowflake/setup.sql
+```
 
 Create utility functions:
+
+```text
 snowflake/functions.sql
+```
 
 ---
 
@@ -232,6 +261,12 @@ The container executes:
 4. dbt test
 
 Environment variables are provided through Cloud Run configuration and/or GCP Secret Manager.
+
+---
+
+## Dashboard
+
+Analytical datasets produced by this project are consumed by a separate Streamlit dashboard application maintained independently from this repository.
 
 ---
 
@@ -251,6 +286,7 @@ Implemented checks include:
 - duplicate match detection
 - match result consistency
 - team statistics validation
+- duplicated team statistics detection
 
 ### Diagnostic Models
 
